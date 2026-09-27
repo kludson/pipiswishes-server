@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf4ee">
+  <meta name="description" content="Маленькое место для наших больших и маленьких желаний.">
+  <title>Pipi's Wishes — наши желания</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ctext y='32' font-size='32'%3E♥%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#create-title">Перейти к созданию желания</a>
+  <main class="page">
+    <header class="hero">
+      <div class="eyebrow">МАЛЕНЬКОЕ МЕСТО ДЛЯ НАС ДВОИХ</div>
+      <h1>Pipi's Wishes <span class="sparkle" aria-hidden="true">💫</span></h1>
+      <p>Здесь живут наши маленькие и большие желания <span class="heart">♥</span></p>
+    </header>
+
+    <section class="composer" aria-labelledby="create-heading">
+      <div class="section-intro"><span class="round-icon" aria-hidden="true">✧</span><div><h2 id="create-heading">Всё начинается с желания</h2><p>Загадай. А вместе мы сделаем его настоящим.</p></div></div>
+      <form id="create-form">
+        <fieldset>
+          <label for="create-title">О чём ты мечтаешь?</label>
+          <input id="create-title" name="title" maxlength="255" required placeholder="Например, встретить рассвет у моря">
+          <label for="create-description">Немного подробностей <span class="optional">— если хочется</span></label>
+          <textarea id="create-description" name="description" maxlength="255" rows="3" placeholder="Место, настроение или маленькая деталь…"></textarea>
+          <div class="form-bottom"><span class="form-note">Больших и маленьких. Любых твоих.</span><button class="primary" type="submit">Добавить желание ♥</button></div>
+          <p class="form-error" id="create-error" role="alert" hidden></p>
+        </fieldset>
+      </form>
+    </section>
+
+    <section class="collection" aria-labelledby="wishes-heading">
+      <div class="collection-heading"><h2 id="wishes-heading">Наши желания <span aria-hidden="true">♡</span></h2><span id="list-count" class="list-count" aria-live="polite"></span></div>
+      <div class="filters" role="group" aria-label="Показать желания">
+        <button type="button" data-filter="all" aria-pressed="true">Все</button>
+        <button type="button" data-filter="pending" aria-pressed="false">В ожидании</button>
+        <button type="button" data-filter="executed" aria-pressed="false">Исполненные</button>
+      </div>
+      <div id="list-state" class="list-state" role="status"><span class="state-symbol" aria-hidden="true">✧</span><p id="state-text">Собираем наши желания…</p><button id="retry" class="secondary" type="button" hidden>Попробовать снова</button></div>
+      <div id="wish-list" class="wish-list" aria-busy="true"></div>
+    </section>
+    <footer>Одно желание. Два человека. Немного волшебства. <span class="heart">♥</span></footer>
+  </main>
+
+  <dialog id="edit-dialog" aria-labelledby="edit-heading">
+    <h2 id="edit-heading">Пусть мечта станет точнее</h2>
+    <p class="dialog-intro">Маленькие детали тоже важны.</p>
+    <form id="edit-form"><fieldset>
+      <label for="edit-title">О чём ты мечтаешь?</label>
+      <input id="edit-title" name="title" maxlength="255" required>
+      <label for="edit-description">Немного подробностей <span class="optional">— необязательно</span></label>
+      <textarea id="edit-description" name="description" maxlength="255" rows="4"></textarea>
+      <p id="edit-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button type="button" class="secondary" data-close="edit-dialog">Отмена</button><button type="submit" class="primary">Сохранить</button></div>
+    </fieldset></form>
+  </dialog>
+
+  <dialog id="delete-dialog" aria-labelledby="delete-heading" aria-describedby="delete-description">
+    <span class="round-icon" aria-hidden="true">♡</span>
+    <h2 id="delete-heading">Удалить это желание?</h2>
+    <p id="delete-description">Оно исчезнет из нашего списка. Отменить удаление не получится.</p>
+    <p id="delete-preview" class="delete-preview"></p>
+    <form id="delete-form"><fieldset>
+      <p id="delete-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button type="button" class="secondary" data-close="delete-dialog" autofocus>Оставить</button><button type="submit" class="primary">Удалить желание</button></div>
+    </fieldset></form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><p class="noscript">Чтобы создавать и исполнять желания, включи JavaScript в браузере.</p></noscript>
+</body>
+</html>
