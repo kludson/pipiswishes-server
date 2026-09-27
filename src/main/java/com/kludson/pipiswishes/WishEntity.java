@@ -1,0 +1,64 @@
+package com.kludson.pipiswishes;
+
+import jakarta.persistence.*;
+
+@Table(name="wishes")
+@Entity
+public class WishEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name="title")
+    private String title;
+
+    @Column(name="description")
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="Status")
+    private WishStatus status;
+
+    public WishEntity() {
+    }
+
+    public WishEntity(Long id, String title, String description, WishStatus status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public WishStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(WishStatus status) {
+        this.status = status;
+    }
+}
