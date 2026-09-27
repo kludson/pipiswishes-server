@@ -4,7 +4,7 @@ Backend for a small application where wishes can be created, tracked and eventua
 
 One person leaves a wish — the other makes it happen. That's pretty much it :)
 
-The project is currently backend-only. A separate frontend is planned.
+The Russian-language frontend is served by Spring Boot at `/`, alongside the REST API.
 
 ## Features
 
@@ -114,13 +114,21 @@ docker run \
   pipiswishes
 ```
 
-Docker Compose support is planned to make running the whole application easier.
+Alternatively, configure `DB_PASSWORD` (or the existing `POSTGRES_PASSWORD`) in a local `.env` file, then run `docker compose up --build`. The current Dockerfile builds the JAR itself; Compose starts both the application and PostgreSQL 18. The volume remains mounted at `/var/lib/postgresql`, matching the existing PostgreSQL 18 data layout.
 
 ## Frontend
 
-Currently, this repository contains only the backend.
+Open http://localhost:8080/ to create, edit, delete and fulfill wishes, or filter them by status. The responsive interface uses HTML, CSS and vanilla JavaScript with no frontend build step or external assets.
 
-A separate frontend application is planned.
+Files in `src/main/resources/static/` are automatically packaged into the application JAR and Docker image:
+
+- `index.html` — page and accessible form dialogs
+- `css/style.css` — responsive styling and reduced-motion support
+- `js/app.js` — rendering, notifications and same-origin API requests
+
+The frontend sends `{ "title": "...", "description": "..." }` for POST and PUT. Responses contain `id`, `title`, `description`, and `status` (`PENDING` or `EXECUTED`); list endpoints return arrays. Creation must omit `id` and `status`. The server sets the status and only allows editing or fulfilling pending wishes. Executed wishes can still be deleted; their edit button is disabled with an explanation.
+
+The UI requires a nonblank title and limits title and description to 255 characters to match the entity's default string column lengths. The backend currently has no required-field validation. API URLs are relative (`/wish`); no deployment-specific hostname is needed.
 
 ## Status
 
