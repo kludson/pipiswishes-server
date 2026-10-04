@@ -128,6 +128,8 @@ The “Поцелуйчики” tab shows today's kiss count and a heart-shaped
 
 Files in `src/main/resources/static/` are automatically packaged into the application JAR and Docker image:
 
+CSS and JavaScript URLs in `index.html` include a version suffix (the first 12 SHA-256 characters of the asset). Refresh these suffixes when editing the corresponding assets. Static resources are served with `Cache-Control: no-cache`, so cached copies must be revalidated. If a browser still shows old styling immediately after deployment, use a hard refresh (`Ctrl+F5`).
+
 - `index.html` — page and accessible form dialogs
 - `css/style.css` — responsive styling and reduced-motion support
 - `js/app.js` — rendering, notifications and same-origin API requests
