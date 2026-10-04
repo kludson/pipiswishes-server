@@ -16,14 +16,36 @@
   const deleteForm = byId('delete-form');
   let toastTimer;
 
-  // API: POST/PUT accept title and description; status is managed by the server.
+  class ApiError extends Error {}
+
+  function errorMessage(error, fallback) {
+    return error instanceof ApiError ? error.message : fallback;
+  }
+
+  function apiErrorMessage(status, data) {
+    if (status >= 500) return 'На сервере произошла ошибка. Попробуй ещё раз позже.';
+    const detail = typeof data?.detailedMessage === 'string' ? data.detailedMessage.trim() : '';
+    if (detail.startsWith('Cannot modify wish: status=')) return 'Исполненное желание уже нельзя изменить или исполнить повторно.';
+    if (detail.startsWith('Not found wish by id=') || status === 404) return 'Желание не найдено. Возможно, оно уже удалено. Обнови список.';
+    if (detail === 'Id should be empty') return 'При создании желания не нужно указывать его номер.';
+    if (detail === 'Status should be empty') return 'Статус нового желания назначается автоматически.';
+    if (detail) return detail;
+    if (typeof data?.message === 'string' && data.message.trim() && data.message !== 'Bad request') return data.message;
+    return status === 400 ? 'Проверь заполненные поля и попробуй ещё раз.' : 'Не удалось выполнить запрос. Попробуй ещё раз.';
+  }
+
+  // API: POST/PUT accept title, description and an optional YYYY-MM-DD deadline.
   async function request(url, { method = 'GET', body, signal } = {}) {
     const response = await fetch(url, {
       method, signal, cache: 'no-store',
       headers: body ? { 'Content-Type': 'application/json', Accept: 'application/json' } : { Accept: 'application/json' },
       body: body ? JSON.stringify(body) : undefined
     });
-    if (!response.ok) throw new Error(`Request failed: ${method} ${url} (${response.status})`);
+    if (!response.ok) {
+      let data;
+      try { data = await response.json(); } catch { /* A proxy may return an empty or HTML response. */ }
+      throw new ApiError(apiErrorMessage(response.status, data));
+    }
     if (method === 'DELETE' || response.status === 204) return null;
     return response.json();
   }
@@ -58,6 +80,15 @@
     card.append(element('span', 'status', executed ? '✓ Исполнено' : pending ? '✧ В ожидании' : 'Статус не указан'));
     card.append(element('h3', '', wish.title || 'Желание без названия'));
     if (wish.description) card.append(element('p', 'wish-description', wish.description));
+    if (wish.deadline) {
+      // LocalDate is a calendar date: do not convert it through a UTC timestamp.
+      const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(wish.deadline);
+      const deadline = element('time', 'wish-deadline', parts
+        ? `Исполнить до ${parts[3]}.${parts[2]}.${parts[1]}`
+        : `Исполнить до ${wish.deadline}`);
+      deadline.setAttribute('datetime', wish.deadline);
+      card.append(deadline);
+    }
     const actions = element('div', 'card-actions');
     const edit = action('✎ Изменить', 'quiet', () => openEdit(wish));
     edit.disabled = !pending;
@@ -125,7 +156,7 @@
     } catch (error) {
       if (error.name === 'AbortError' || loadId !== state.loadId) return;
       console.error(error);
-      showListState('Не удалось загрузить желания. Попробуй ещё раз.', true);
+      showListState(errorMessage(error, 'Не удалось загрузить желания. Проверь соединение и попробуй ещё раз.'), true);
     } finally {
       if (loadId === state.loadId) {
         state.loading = false;
@@ -148,7 +179,7 @@
       form.elements.title.focus();
       return null;
     }
-    return { title, description: form.elements.description.value.trim() };
+    return { title, description: form.elements.description.value.trim(), deadline: form.elements.deadline.value || null };
   }
 
   async function submitForm(form, operation) {
@@ -161,7 +192,7 @@
       await operation();
     } catch (error) {
       console.error(error);
-      formError(form, 'Что-то пошло не так. Попробуй ещё раз.');
+      formError(form, errorMessage(error, 'Не удалось связаться с сервером. Проверь соединение и попробуй ещё раз.'));
     } finally {
       fieldset.disabled = false;
       form.setAttribute('aria-busy', 'false');
@@ -172,6 +203,7 @@
     state.editing = wish.id;
     editForm.elements.title.value = wish.title || '';
     editForm.elements.description.value = wish.description || '';
+    editForm.elements.deadline.value = wish.deadline || '';
     formError(editForm);
     byId('edit-dialog').showModal();
     editForm.elements.title.focus();
@@ -195,7 +227,7 @@
       document.querySelector('[data-filter][aria-pressed="true"]').focus({ preventScroll: true });
     } catch (error) {
       console.error(error);
-      notify('Что-то пошло не так. Попробуй ещё раз.');
+      notify(errorMessage(error, 'Не удалось связаться с сервером. Проверь соединение и попробуй ещё раз.'));
     } finally {
       card.setAttribute('aria-busy', 'false');
       card.querySelectorAll('button').forEach((button) => { button.disabled = false; });

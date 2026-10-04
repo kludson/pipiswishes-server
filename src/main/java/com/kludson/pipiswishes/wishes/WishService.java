@@ -64,7 +64,8 @@ public class WishService {
                 null,
                 wishToCreate.title(),
                 wishToCreate.description(),
-                WishStatus.PENDING
+                WishStatus.PENDING,
+                wishToCreate.deadline()
         );
 
         var createdEntity = repository.save(wishEntity);
@@ -86,7 +87,8 @@ public class WishService {
                 wishEntity.getId(),
                 wishToUpdate.title(),
                 wishToUpdate.description(),
-                WishStatus.PENDING
+                WishStatus.PENDING,
+                wishToUpdate.deadline()
         );
 
         var updatedWish = repository.save(updatedWishEntity);
@@ -114,7 +116,8 @@ public class WishService {
                 wishEntityToExecute.getId(),
                 wishEntityToExecute.getTitle(),
                 wishEntityToExecute.getDescription(),
-                WishStatus.EXECUTED
+                WishStatus.EXECUTED,
+                wishEntityToExecute.getDeadline()
         );
 
         var executedWish = repository.save(executedWishEntity);
@@ -127,7 +130,8 @@ public class WishService {
                 entity.getId(),
                 entity.getTitle(),
                 entity.getDescription(),
-                entity.getStatus()
+                entity.getStatus(),
+                entity.getDeadline()
         );
     }
 }

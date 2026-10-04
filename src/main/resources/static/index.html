@@ -27,6 +27,8 @@
           <input id="create-title" name="title" maxlength="255" required placeholder="Например, встретить рассвет у моря">
           <label for="create-description">Немного подробностей <span class="optional">— если хочется</span></label>
           <textarea id="create-description" name="description" maxlength="255" rows="3" placeholder="Место, настроение или маленькая деталь…"></textarea>
+          <label for="create-deadline">Исполнить до <span class="optional">— необязательно</span></label>
+          <input id="create-deadline" name="deadline" type="date">
           <div class="form-bottom"><span class="form-note">Больших и маленьких. Любых твоих.</span><button class="primary" type="submit">Добавить желание ♥</button></div>
           <p class="form-error" id="create-error" role="alert" hidden></p>
         </fieldset>
@@ -59,6 +61,8 @@
       <input id="edit-title" name="title" maxlength="255" required>
       <label for="edit-description">Немного подробностей <span class="optional">— необязательно</span></label>
       <textarea id="edit-description" name="description" maxlength="255" rows="4"></textarea>
+      <label for="edit-deadline">Исполнить до <span class="optional">— необязательно</span></label>
+      <input id="edit-deadline" name="deadline" type="date">
       <p id="edit-error" class="form-error" role="alert" hidden></p>
       <div class="dialog-actions"><button type="button" class="secondary" data-close="edit-dialog">Отмена</button><button type="submit" class="primary">Сохранить</button></div>
     </fieldset></form>

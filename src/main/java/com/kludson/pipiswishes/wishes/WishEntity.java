@@ -1,5 +1,7 @@
 package com.kludson.pipiswishes.wishes;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 
 @Table(name="wishes")
@@ -10,24 +12,28 @@ public class WishEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name="title")
+    @Column(name = "title")
     private String title;
 
-    @Column(name="description")
+    @Column(name = "description")
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="Status")
+    @Column(name = "status")
     private WishStatus status;
+
+    @Column(name = "deadline")
+    private LocalDate deadline;
 
     public WishEntity() {
     }
 
-    public WishEntity(Long id, String title, String description, WishStatus status) {
+    public WishEntity(Long id, String title, String description, WishStatus status, LocalDate deadline) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
+        this.deadline = deadline;
     }
 
     public Long getId() {
@@ -60,5 +66,13 @@ public class WishEntity {
 
     public void setStatus(WishStatus status) {
         this.status = status;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
     }
 }

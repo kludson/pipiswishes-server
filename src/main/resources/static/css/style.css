@@ -69,6 +69,7 @@ textarea { resize: vertical; min-height: 88px; }
 .execute:hover:not(:disabled) { background: #eacdd0; }
 .completed-note { margin-left: auto; color: var(--green); font-size: 12px; }
 .locked-note { display: block; color: var(--brown-light); font-size: 11px; margin-top: 8px; }
+.wish-deadline { display: block; color: var(--pink-dark); font-size: 13px; margin-top: 12px; }
 .list-state { text-align: center; padding: 38px 25px; border: 1px dashed #dac7bb; border-radius: 18px; color: var(--brown-light); }
 .state-symbol { color: var(--pink-dark); font-size: 33px; }
 .list-state p { margin: 8px auto 12px; max-width: 350px; }

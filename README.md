@@ -128,7 +128,9 @@ Files in `src/main/resources/static/` are automatically packaged into the applic
 - `css/style.css` — responsive styling and reduced-motion support
 - `js/app.js` — rendering, notifications and same-origin API requests
 
-The frontend sends `{ "title": "...", "description": "..." }` for POST and PUT. Responses contain `id`, `title`, `description`, and `status` (`PENDING` or `EXECUTED`); list endpoints return arrays. Creation must omit `id` and `status`. The server sets the status and only allows editing or fulfilling pending wishes. Executed wishes can still be deleted; their edit button is disabled with an explanation.
+The frontend sends `{ "title": "...", "description": "...", "deadline": "2026-10-20" }` for POST and PUT. The optional deadline is a calendar date in `YYYY-MM-DD` format; clearing it sends `null`. Responses contain `id`, `title`, `description`, `deadline`, and `status` (`PENDING` or `EXECUTED`); list endpoints return arrays. Creation must omit `id` and `status`. The server sets the status and only allows editing or fulfilling pending wishes. Executed wishes can still be deleted; their edit button is disabled with an explanation.
+
+API errors contain `message`, `detailedMessage`, and `errorTime`. The frontend displays request errors in forms, list loading errors above the list, and execution errors in a notification. Known backend messages are translated into Russian; server errors and non-JSON responses use a friendly fallback.
 
 The UI requires a nonblank title and limits title and description to 255 characters to match the entity's default string column lengths. The backend currently has no required-field validation. API URLs are relative (`/wish`); no deployment-specific hostname is needed.
 

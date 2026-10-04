@@ -27,17 +27,33 @@ dependency-reduced-pom.xml
 
 ### Java ###
 *.class
+*.jar
+*.war
+*.ear
+!.mvn/wrapper/maven-wrapper.jar
 hs_err_pid*
 replay_pid*
+out/
 
 ### Logs ###
 *.log
 logs/
+*.pid
 
 ### Environment variables / secrets ###
 .env
 .env.*
 !.env.example
+!.env.sample
+!.env.template
+
+### Local Spring Boot configuration ###
+/application-local.properties
+/application-local.yml
+/application-local.yaml
+/config/application-local.properties
+/config/application-local.yml
+/config/application-local.yaml
 
 ### OS files ###
 .DS_Store

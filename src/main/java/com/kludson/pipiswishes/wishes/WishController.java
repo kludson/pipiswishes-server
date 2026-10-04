@@ -70,13 +70,10 @@ public class WishController {
             @PathVariable("id") Long id
     ) {
         logger.info("Called deleteWish with id=" + id);
-        try {
-            wishService.deleteWish(id);
 
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        wishService.deleteWish(id);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/{id}/execute")
