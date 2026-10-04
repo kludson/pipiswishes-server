@@ -71,6 +71,8 @@ Do not store real passwords or other secrets in the repository.
 
 Make sure PostgreSQL is running and the database connection is configured.
 
+For a host JAR with PostgreSQL in Docker, start only the database with `docker compose up -d db`. If the application container is already running, stop it with `docker compose stop app` to free port 8080. The database is published at `127.0.0.1:5432`; the JAR uses `localhost:5432` by default. Compose reads `.env`, but a host JAR does not: set `DB_PASSWORD` in the same terminal before launching Java (for example, `$env:DB_PASSWORD = 'your_password'` in PowerShell).
+
 Build the project:
 
 ```bash
@@ -91,11 +93,7 @@ http://localhost:8080
 
 ## Running with Docker
 
-Build the application first:
-
-```bash
-mvn clean package
-```
+The Dockerfile builds the JAR with Maven inside its build stage, so a separate host Maven build is not required.
 
 Build the Docker image:
 
@@ -118,7 +116,9 @@ docker run \
   pipiswishes
 ```
 
-Alternatively, configure `DB_PASSWORD` (or the existing `POSTGRES_PASSWORD`) in a local `.env` file, then run `docker compose up --build`. The current Dockerfile builds the JAR itself; Compose starts both the application and PostgreSQL 18. The volume remains mounted at `/var/lib/postgresql`, matching the existing PostgreSQL 18 data layout.
+Alternatively, configure `DB_PASSWORD` (or `POSTGRES_PASSWORD`) in a local `.env` file, then run `docker compose up -d --build`. Compose starts both the application and PostgreSQL 17; the app connects to `db:5432`. The database volume is mounted at `/var/lib/postgresql/data`, and port 5432 is also published on the host's loopback interface.
+
+On a VM already using PostgreSQL 17, keep the existing Compose project name, database volume, and configured database password. Normal `docker compose up -d --build` reuses the volume. Replacing a local test volume after switching major versions is a separate one-time operation; do not perform that data reset on the VM.
 
 ## Frontend
 
