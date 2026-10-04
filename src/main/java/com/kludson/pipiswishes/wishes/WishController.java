@@ -1,6 +1,7 @@
 package com.kludson.pipiswishes.wishes;
 
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class WishController {
 
     @PostMapping()
     public ResponseEntity<Wish> createWish(
-            @RequestBody Wish wishToCreate
+            @RequestBody @Valid Wish wishToCreate
     ) {
         logger.info("Called createWish");
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -58,7 +59,7 @@ public class WishController {
     @PutMapping("/{id}")
     public ResponseEntity<Wish> updateWish(
             @PathVariable("id") Long id,
-            @RequestBody Wish wishToUpdate
+            @RequestBody @Valid Wish wishToUpdate
     ) {
         logger.info("Called updateWish");
         return ResponseEntity.status(HttpStatus.OK)

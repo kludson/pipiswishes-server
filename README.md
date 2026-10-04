@@ -51,6 +51,8 @@ Base path:
 
 ## Configuration
 
+The kiss counter is daily and uses the singleton ID 1. Reading a missing row or a row dated before today returns zero for today without modifying the database. Each click performs one atomic PostgreSQL UPSERT: create the row with count one, increment today's count, or set the count to one and advance the date. No initial row needs to be inserted manually. The day boundary uses `Europe/Moscow` by default; override it with `app.kiss-counter.time-zone` (for example, `APP_KISS_COUNTER_TIME_ZONE=Europe/Moscow`).
+
 `GET /wish` accepts optional `status` (`PENDING` or `EXECUTED`), `pageSize` (default 5), and `pageNum` (zero-based, default 0). Omit `status` to include all wishes. Responses are arrays without a total count. The frontend displays five wishes per page and checks the following page to enable navigation. Changing the filter resets navigation to the first page.
 
 The application uses PostgreSQL.
@@ -122,11 +124,14 @@ Alternatively, configure `DB_PASSWORD` (or the existing `POSTGRES_PASSWORD`) in 
 
 Open http://localhost:8080/ to create, edit, delete and fulfill wishes, or filter them by status. The responsive interface uses HTML, CSS and vanilla JavaScript with no frontend build step or external assets.
 
+The “Поцелуйчики” tab shows today's kiss count and a heart-shaped button. Each tap queues one `PUT /kisscount?id=1` request (the response has no body); `GET /kisscount?id=1` loads the authoritative count when opening the tab, after saving taps, when returning to the page, and every minute while the tab is visible. Failed requests are not replayed automatically because a lost response may follow a successful increment. The tabs support arrow keys, Home, and End; the heart button supports keyboard activation.
+
 Files in `src/main/resources/static/` are automatically packaged into the application JAR and Docker image:
 
 - `index.html` — page and accessible form dialogs
 - `css/style.css` — responsive styling and reduced-motion support
 - `js/app.js` — rendering, notifications and same-origin API requests
+- `js/kisses.js` — site tabs, daily kiss counter and queued taps
 
 The frontend sends `{ "title": "...", "description": "...", "deadline": "2026-10-20" }` for POST and PUT. The optional deadline is a calendar date in `YYYY-MM-DD` format; clearing it sends `null`. Responses contain `id`, `title`, `description`, `deadline`, and `status` (`PENDING` or `EXECUTED`); list endpoints return arrays. Creation must omit `id` and `status`. The server sets the status and only allows editing or fulfilling pending wishes. Executed wishes can still be deleted; their edit button is disabled with an explanation.
 

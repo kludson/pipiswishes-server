@@ -9,6 +9,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ctext y='32' font-size='32'%3E♥%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="/css/style.css">
   <script src="/js/app.js" defer></script>
+  <script src="/js/kisses.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#create-title">Перейти к созданию желания</a>
@@ -19,6 +20,11 @@
       <p>Здесь живут наши маленькие и большие желания <span class="heart">♥</span></p>
     </header>
 
+    <div class="site-tabs" role="tablist" aria-label="Наше особенное место">
+      <button id="wishes-tab" type="button" role="tab" aria-selected="true" aria-controls="wishes-panel">Желания ✧</button>
+      <button id="kisses-tab" type="button" role="tab" aria-selected="false" aria-controls="kisses-panel" tabindex="-1">Поцелуйчики ♡</button>
+    </div>
+    <div id="wishes-panel" role="tabpanel" aria-labelledby="wishes-tab">
     <section class="composer" aria-labelledby="create-heading">
       <div class="section-intro"><span class="round-icon" aria-hidden="true">✧</span><div><h2 id="create-heading">Всё начинается с желания</h2><p>Загадай. А вместе мы сделаем его настоящим.</p></div></div>
       <form id="create-form">
@@ -49,6 +55,34 @@
         <span id="page-number" aria-live="polite">Страница 1</span>
         <button id="next-page" class="secondary" type="button" disabled>Дальше →</button>
       </nav>
+    </section>
+    </div>
+    <section id="kisses-panel" class="composer kisses-panel" role="tabpanel" aria-labelledby="kisses-tab" hidden>
+      <div class="section-intro"><span class="round-icon" aria-hidden="true">♡</span><div><h2>Всё начинается с поцелуя</h2><p>Один жам — одно маленькое обещание нежности.</p></div></div>
+      <p class="kiss-intro">Жамкай на сердечко. Сколько раз нажмёшь — столько раз я должен буду поцеловать тебя сегодня <span class="heart">♥</span></p>
+      <div class="kiss-stage">
+        <p class="kiss-today">Сегодня я должен тебе</p>
+        <div class="kiss-total" aria-live="polite" aria-atomic="true"><strong id="kiss-count">—</strong><span id="kiss-unit">поцелуйчиков</span></div>
+        <div id="kiss-heart-wrap" class="kiss-heart-wrap">
+          <button id="kiss-button" class="kiss-button" type="button" aria-label="Добавить один поцелуйчик" disabled>
+          <span id="kiss-button-art" class="kiss-button-art">
+        <svg viewBox="0 0 240 220" aria-hidden="true" focusable="false">
+          <defs><linearGradient id="kiss-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d79ba5"/><stop offset="1" stop-color="#975361"/></linearGradient></defs>
+          <path d="M120 205 C105 191 16 133 12 79 C8 25 74 4 120 53 C166 4 232 25 228 79 C224 133 135 191 120 205Z" fill="url(#kiss-gradient)"/>
+          <path d="M38 72 C40 49 62 39 80 47" fill="none" stroke="#ffffff66" stroke-width="7" stroke-linecap="round"/>
+        </svg>
+        <span class="kiss-button-label">+1<span>жам ♡</span></span>
+          </span>
+          </button>
+        </div>
+      <p id="kiss-status" class="kiss-status" role="status">Сердечко ждёт твоего первого жама.</p>
+      <p id="kiss-error" class="form-error" role="alert" hidden></p>
+      <button id="kiss-retry" class="secondary" type="button" hidden>Обновить счётчик</button>
+      </div>
+      <div class="kiss-footer">
+      <p class="kiss-reset">Каждый новый день — новая порция нежности.</p>
+      <p class="kiss-footnote">Сердечко особенно любит дни, когда ты рядышком: пусть все загаданные поцелуйчики успеют найти твои щёчки до сна ♡</p>
+      </div>
     </section>
     <footer>Одно желание. Два человека. Немного волшебства. <span class="heart">♥</span></footer>
   </main>

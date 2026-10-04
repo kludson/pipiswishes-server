@@ -13,7 +13,7 @@ public class WishService {
     private static final int DEFAULT_PAGE_SIZE = 5;
     private static final int DEFAULT_PAGE_NUM = 0;
 
-    private WishRepository repository;
+    private final WishRepository repository;
 
     public WishService(WishRepository repository) {
         this.repository = repository;
