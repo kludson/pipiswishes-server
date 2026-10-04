@@ -1,4 +1,4 @@
-package com.kludson.pipiswishes;
+package com.kludson.pipiswishes.wishes;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -21,24 +21,20 @@ public class WishController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Wish>> getAllWishes() {
+    public ResponseEntity<List<Wish>> getAllWishes(
+            @RequestParam(name = "status", required = false) WishStatus status,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize,
+            @RequestParam(name = "pageNum", required = false) Integer pageNum
+    ) {
         logger.info("Called getAllWishes");
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(wishService.getAllWishes());
-    }
 
-    @GetMapping("/pending")
-    public ResponseEntity<List<Wish>> getAllWishesWithStatusPending() {
-        logger.info("Called getAllWishesWithStatusPending");
+        var filter = new WishFilter(
+                status,
+                pageSize,
+                pageNum
+        );
         return ResponseEntity.status(HttpStatus.OK)
-                .body(wishService.getAllWishesWithStatusPending());
-    }
-
-    @GetMapping("/executed")
-    public ResponseEntity<List<Wish>> getAllWishesWithStatusExecuted() {
-        logger.info("Called getAllWishesWithStatusExecuted");
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(wishService.getAllWishesWithStatusExecuted());
+                .body(wishService.searchAllWishesByFilter(filter));
     }
 
     @GetMapping("/{id}")

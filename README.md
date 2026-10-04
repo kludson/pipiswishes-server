@@ -42,14 +42,16 @@ Base path:
 |---|---|---|
 | `GET` | `/wish` | Get all wishes |
 | `GET` | `/wish/{id}` | Get a wish by ID |
-| `GET` | `/wish/pending` | Get all pending wishes |
-| `GET` | `/wish/executed` | Get all executed wishes |
+| `GET` | `/wish?status=PENDING&pageSize=5&pageNum=0` | Get a page of pending wishes |
+| `GET` | `/wish?status=EXECUTED&pageSize=5&pageNum=0` | Get a page of executed wishes |
 | `POST` | `/wish` | Create a new wish |
 | `PUT` | `/wish/{id}` | Update an existing wish |
 | `DELETE` | `/wish/{id}` | Delete a wish |
 | `POST` | `/wish/{id}/execute` | Mark a wish as executed |
 
 ## Configuration
+
+`GET /wish` accepts optional `status` (`PENDING` or `EXECUTED`), `pageSize` (default 5), and `pageNum` (zero-based, default 0). Omit `status` to include all wishes. Responses are arrays without a total count. The frontend displays five wishes per page and checks the following page to enable navigation. Changing the filter resets navigation to the first page.
 
 The application uses PostgreSQL.
 

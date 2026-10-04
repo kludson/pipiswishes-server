@@ -1,41 +1,45 @@
-package com.kludson.pipiswishes;
+package com.kludson.pipiswishes.wishes;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class WishService {
+
+    private static final int DEFAULT_PAGE_SIZE = 5;
+    private static final int DEFAULT_PAGE_NUM = 0;
+
     private WishRepository repository;
 
     public WishService(WishRepository repository) {
         this.repository = repository;
     }
 
-    public List<Wish> getAllWishes() {
-        List<WishEntity> allWishEntities = repository.findAll();
+    public List<Wish> searchAllWishesByFilter(WishFilter filter) {
+
+        int pageSize = filter.pageSize() != null
+                ? filter.pageSize() : DEFAULT_PAGE_SIZE;
+
+        int pageNum = filter.pageNum() != null
+                ? filter.pageNum() : DEFAULT_PAGE_NUM;
+
+        var pageable = PageRequest.of(
+            pageNum,
+            pageSize,
+            Sort.by("status").descending()
+                .and(Sort.by("id")));
+
+        List<WishEntity> allWishEntities = repository.searchAllWishesByFilter(
+                filter.status(),
+                pageable
+        );
 
         return allWishEntities.stream()
                 .map(this::toDomainWish)
-                .toList();
-    }
-
-    public List<Wish> getAllWishesWithStatusPending() {
-        List<WishEntity> allWishEntities = repository.findAll();
-
-        return allWishEntities.stream()
-                .map(this::toDomainWish)
-                .filter(it -> it.status() == WishStatus.PENDING)
-                .toList();
-    }
-
-    public List<Wish> getAllWishesWithStatusExecuted() {
-        List<WishEntity> allWishEntities = repository.findAll();
-
-        return allWishEntities.stream()
-                .map(this::toDomainWish)
-                .filter(it -> it.status() == WishStatus.EXECUTED)
                 .toList();
     }
 

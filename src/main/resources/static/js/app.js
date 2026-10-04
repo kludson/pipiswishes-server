@@ -1,13 +1,14 @@
 (() => {
   'use strict';
 
-  const endpoints = { all: '/wish', pending: '/wish/pending', executed: '/wish/executed' };
+  const statuses = { pending: 'PENDING', executed: 'EXECUTED' };
+  const pageSize = 5;
   const emptyMessages = {
     all: 'Пока здесь нет желаний. Самое время загадать первое ✨',
     pending: 'Все желания исполнены ♥',
     executed: 'Здесь пока нет исполненных желаний.'
   };
-  const state = { filter: 'all', wishes: [], loadId: 0, controller: null, editing: null, deleting: null };
+  const state = { filter: 'all', page: 0, hasNext: false, loading: false, wishes: [], loadId: 0, controller: null, editing: null, deleting: null };
   const byId = (id) => document.getElementById(id);
   const list = byId('wish-list');
   const createForm = byId('create-form');
@@ -74,22 +75,51 @@
     byId('retry').hidden = !retry;
   }
 
-  // Only the latest filter request may update the list.
+  function pageUrl(page) {
+    const params = new URLSearchParams({ pageSize, pageNum: page });
+    if (statuses[state.filter]) params.set('status', statuses[state.filter]);
+    return `/wish?${params}`;
+  }
+
+  function updatePagination() {
+    byId('previous-page').disabled = state.loading || state.page === 0;
+    byId('next-page').disabled = state.loading || !state.hasNext;
+    byId('page-number').textContent = `Страница ${state.page + 1}`;
+  }
+
+  // Only the latest filter/page request may update the list.
   async function loadWishes() {
     const loadId = ++state.loadId;
     state.controller?.abort();
     state.controller = new AbortController();
+    state.loading = true;
+    byId('pagination').hidden = true;
+    updatePagination();
     list.replaceChildren();
     list.setAttribute('aria-busy', 'true');
     byId('list-count').textContent = '';
     showListState('Собираем наши желания…');
     try {
-      const wishes = await request(endpoints[state.filter], { signal: state.controller.signal });
+      const wishes = await request(pageUrl(state.page), { signal: state.controller.signal });
       if (loadId !== state.loadId) return;
       if (!Array.isArray(wishes)) throw new Error('Expected a wish array');
+      // Deleting or executing the last item can remove the current page.
+      if (!wishes.length && state.page > 0) {
+        state.page--;
+        return await loadWishes();
+      }
+      let hasNext = false;
+      if (wishes.length === pageSize) {
+        const next = await request(pageUrl(state.page + 1), { signal: state.controller.signal });
+        if (loadId !== state.loadId) return;
+        if (!Array.isArray(next)) throw new Error('Expected a wish array');
+        hasNext = next.length > 0;
+      }
+      state.hasNext = hasNext;
       state.wishes = wishes;
       list.replaceChildren(...wishes.map(renderWish));
-      byId('list-count').textContent = `В списке: ${wishes.length}`;
+      byId('list-count').textContent = `На странице: ${wishes.length}`;
+      byId('pagination').hidden = wishes.length === 0;
       byId('list-state').hidden = wishes.length > 0;
       if (!wishes.length) showListState(emptyMessages[state.filter]);
     } catch (error) {
@@ -97,7 +127,11 @@
       console.error(error);
       showListState('Не удалось загрузить желания. Попробуй ещё раз.', true);
     } finally {
-      if (loadId === state.loadId) list.setAttribute('aria-busy', 'false');
+      if (loadId === state.loadId) {
+        state.loading = false;
+        list.setAttribute('aria-busy', 'false');
+        updatePagination();
+      }
     }
   }
 
@@ -207,6 +241,7 @@
   document.querySelectorAll('[data-filter]').forEach((button) => {
     button.addEventListener('click', () => {
       state.filter = button.dataset.filter;
+      state.page = 0;
       document.querySelectorAll('[data-filter]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
       loadWishes();
     });
@@ -218,6 +253,16 @@
     dialog.addEventListener('cancel', (event) => {
       if (dialog.querySelector('fieldset').disabled) event.preventDefault();
     });
+  });
+  byId('previous-page').addEventListener('click', () => {
+    if (state.loading || state.page === 0) return;
+    state.page--;
+    loadWishes();
+  });
+  byId('next-page').addEventListener('click', () => {
+    if (state.loading || !state.hasNext) return;
+    state.page++;
+    loadWishes();
   });
   byId('retry').addEventListener('click', loadWishes);
   loadWishes();

@@ -1,4 +1,4 @@
-package com.kludson.pipiswishes;
+package com.kludson.pipiswishes.wishes;
 
 public enum WishStatus {
     PENDING,

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#faf4ee">
-  <meta name="description" content="Маленькое место для наших больших и маленьких желаний.">
+  <meta name="description" content="Особенное место для наших больших и маленьких желаний.">
   <title>Pipi's Wishes — наши желания</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ctext y='32' font-size='32'%3E♥%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="/css/style.css">
@@ -14,7 +14,7 @@
   <a class="skip-link" href="#create-title">Перейти к созданию желания</a>
   <main class="page">
     <header class="hero">
-      <div class="eyebrow">МАЛЕНЬКОЕ МЕСТО ДЛЯ НАС ДВОИХ</div>
+      <div class="eyebrow">ОСОБЕННОЕ МЕСТО ДЛЯ НАС ДВОИХ</div>
       <h1>Pipi's Wishes <span class="sparkle" aria-hidden="true">💫</span></h1>
       <p>Здесь живут наши маленькие и большие желания <span class="heart">♥</span></p>
     </header>
@@ -42,6 +42,11 @@
       </div>
       <div id="list-state" class="list-state" role="status"><span class="state-symbol" aria-hidden="true">✧</span><p id="state-text">Собираем наши желания…</p><button id="retry" class="secondary" type="button" hidden>Попробовать снова</button></div>
       <div id="wish-list" class="wish-list" aria-busy="true"></div>
+      <nav id="pagination" class="pagination" aria-label="Страницы желаний" hidden>
+        <button id="previous-page" class="secondary" type="button" disabled>← Назад</button>
+        <span id="page-number" aria-live="polite">Страница 1</span>
+        <button id="next-page" class="secondary" type="button" disabled>Дальше →</button>
+      </nav>
     </section>
     <footer>Одно желание. Два человека. Немного волшебства. <span class="heart">♥</span></footer>
   </main>

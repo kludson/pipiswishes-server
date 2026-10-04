@@ -53,6 +53,8 @@ textarea { resize: vertical; min-height: 88px; }
 .filters button { background: transparent; color: #756156; min-height: 40px; padding: 8px 23px; font-size: 13px; }
 .filters button[aria-pressed="true"] { background: var(--surface); color: var(--pink-dark); box-shadow: 0 2px 7px #50372f0a; font-weight: 600; }
 .wish-list { display: grid; gap: 16px; }
+.pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin-top: 22px; }
+.pagination span { color: var(--brown-light); font-size: 13px; }
 .wish-card { padding: 25px 27px; border: 1px solid var(--border); border-radius: 19px; background: var(--surface); box-shadow: var(--shadow); animation: arrive .25s ease-out; transition: box-shadow .2s; overflow-wrap: anywhere; }
 .wish-card:hover { box-shadow: 0 10px 30px #70534512; }
 .wish-card.executed { background: #f5f6ef; border-color: #dce3d5; }
